@@ -57,4 +57,34 @@ class PanierServiceImplTest {
                 .andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+
+
+    @Test
+    public void shouldGetTotalPrice() throws Exception {
+
+        Mockito.when(panierService.totalPrice()).thenReturn(Float.valueOf(300));
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/panier/total-price"))
+                .andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("300.0"));
+    }
+
+
+    @Test
+    public void shouldDeleteExistingProduit() throws Exception {
+
+        Mockito.when(panierService.deleteProductFromPanier(Long.valueOf(1))).thenReturn(true);
+        this.mockMvc.perform(MockMvcRequestBuilders.delete("/panier/delete-produit/1"))
+                .andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("true"));
+    }
+
+    @Test
+    public void shouldFailedDeleteExistingProduit() throws Exception {
+
+        Mockito.when(panierService.deleteProductFromPanier(Long.valueOf(6))).thenReturn(false);
+        this.mockMvc.perform(MockMvcRequestBuilders.delete("/panier/delete-produit/6"))
+                .andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("false"));
+    }
+
 }
